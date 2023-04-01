@@ -1,2 +1,2 @@
-from . import authors
+from . import authors, books
 from .main import api

@@ -3,18 +3,17 @@ from typing import List
 
 from pydantic import BaseModel
 
-from .main import api
+from .main import api, not_found_response
+
+AuthorId = str
 
 
 class AuthorIn(BaseModel):
-    name: str
+    name: AuthorId
 
 
 class AuthorOut(AuthorIn):
     id: str
-
-
-not_found_response = {HTTPStatus.NOT_FOUND.value: {'model': None}}
 
 
 @api.post('/authors', status_code=HTTPStatus.CREATED)
