@@ -9,11 +9,11 @@ AuthorId = str
 
 
 class AuthorIn(BaseModel):
-    name: AuthorId
+    name: str
 
 
 class AuthorOut(AuthorIn):
-    id: str
+    id: AuthorId
 
 
 @api.post('/authors', status_code=HTTPStatus.CREATED)
