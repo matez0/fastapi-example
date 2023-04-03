@@ -53,6 +53,11 @@ pytest -v
 
 ## Running the application
 
+The path of the database file can be configured with environment variable:
+```
+export MS_DATABASE_URL=sqlite:///./bookstore.db
+```
+
 Go to the directory of the git repository and activate the virtual environment.
 
 Start the application:
