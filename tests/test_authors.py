@@ -5,12 +5,19 @@ from fastapi.testclient import TestClient
 import pytest
 
 from app.api import api
+from app.db.base import engine, metadata
 
 
 @pytest.fixture
-def client():
-    # FIXME: empty the db for each test cases.
+def client(tmp_path):
+    empty_db()
     return TestClient(api)
+
+
+def empty_db():
+    with engine.connect() as connection, connection.begin():
+        for table in reversed(metadata.sorted_tables):
+            connection.execute(table.delete())
 
 
 @pytest.fixture
