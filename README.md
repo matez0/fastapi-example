@@ -6,6 +6,7 @@ This is an example for implementing a REST API using FastAPI and coroutines and 
 - query parameter
 - non default response code
 - indicating additional response schemas with different response status
+- exception handling
 
 The REST API provides CRUD operations for author and book models where each book has one author.
 
@@ -27,6 +28,10 @@ The REST API provides CRUD operations for author and book models where each book
 
 Data are stored using `sqlite`.
 
+> Note:
+> The constraint of existing foreign key is not applied.
+> `PRAGMA foreign_keys=ON` needs to be executed in the database connection.
+
 ## Testing
 
 Go to the directory of the git repository.
@@ -47,6 +52,11 @@ pytest -v
 ```
 
 ## Running the application
+
+The path of the database file can be configured with environment variable:
+```
+export MS_DATABASE_URL=sqlite:///./bookstore.db
+```
 
 Go to the directory of the git repository and activate the virtual environment.
 
