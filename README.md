@@ -6,6 +6,7 @@ This is an example for implementing a REST API using FastAPI and coroutines and 
 - query parameter
 - non default response code
 - indicating additional response schemas with different response status
+- exception handling
 
 The REST API provides CRUD operations for author and book models where each book has one author.
 

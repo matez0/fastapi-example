@@ -21,8 +21,11 @@ def empty_db():
 
 
 @pytest.fixture
-def author_id():
-    return 'feed5678'
+def create_author(client):
+    def _create_author(author):
+        return client.post('/authors', json=author).json()
+
+    return _create_author
 
 
 def test_create_author(client):
@@ -34,33 +37,58 @@ def test_create_author(client):
     assert response.json() == dict(author, id=ANY)
 
 
-def test_retrieve_authors(client):
+def test_retrieve_authors(client, create_author):
     response = client.get('/authors')
 
     assert response.status_code == HTTPStatus.OK
-    assert response.json() == [{'name': 'Sarah Connor', 'id': ANY}]
+    assert response.json() == []
 
+    authors = [
+        create_author({'name': 'Sarah Connor'}),
+        create_author({'name': 'Kyle Reese'}),
+    ]
 
-def test_retrieve_author_by_id(client, author_id):
-    response = client.get(f'/authors/{author_id}')
+    response = client.get('/authors')
 
     assert response.status_code == HTTPStatus.OK
-    assert response.json() == {'name': 'Sarah Connor', 'id': author_id}
+    assert response.json() == authors
 
 
-def test_update_author(client, author_id):
+def test_retrieve_author_by_id(client, create_author):
+    author = create_author({'name': 'John Connor'})
+
+    response = client.get(f'/authors/{author["id"]}')
+
+    assert response.status_code == HTTPStatus.OK
+    assert response.json() == author
+
+
+def test_update_author(client, create_author):
+    author_id = create_author({'name': 'Sarah Connor'})['id']
     updated_author = {'name': 'Miles Dyson'}
+
     response = client.patch(f'/authors/{author_id}', json=updated_author)
 
     assert response.status_code == HTTPStatus.OK
     assert response.json() == dict(updated_author, id=author_id)
 
 
-def test_delete_author(client, author_id):
+def test_delete_author(client, create_author):
+    author_id = create_author({'name': 'Sarah Connor'})['id']
+
     response = client.delete(f'/authors/{author_id}')
 
     assert response.status_code == HTTPStatus.NO_CONTENT
-    # FIXME: check that author cannot be retrieved anymore.
+    assert client.get(f'/authors/{author_id}').status_code == HTTPStatus.NOT_FOUND
 
 
-# FIXME: test when referred item does not exist.
+def test_respond_not_found_when_updating_non_existing_author(client):
+    response = client.patch('/authors/1', json={'name': 'Miles Dyson'})
+
+    assert response.status_code == HTTPStatus.NOT_FOUND
+
+
+def test_respond_not_found_when_deleting_non_existing_author(client):
+    response = client.delete('/authors/1')
+
+    assert response.status_code == HTTPStatus.NOT_FOUND
