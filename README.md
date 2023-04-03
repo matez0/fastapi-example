@@ -28,6 +28,10 @@ The REST API provides CRUD operations for author and book models where each book
 
 Data are stored using `sqlite`.
 
+> Note:
+> The constraint of existing foreign key is not applied.
+> `PRAGMA foreign_keys=ON` needs to be executed in the database connection.
+
 ## Testing
 
 Go to the directory of the git repository.
